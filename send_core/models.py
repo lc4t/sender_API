@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 from django.utils.timezone import now
 
 
@@ -17,3 +18,27 @@ class Function(models.Model):
 
     class Meta:
         ordering = ['name', 'author']
+
+
+class Invite_link(models.Model):
+    user = models.ForeignKey(User, db_index=True)
+    link = models.URLField(blank=False)
+    remain = models.IntegerField(default=5)
+
+    def __str__(self):
+        return '%s %s %d' % (self.user.username, self.link, self.remain)
+
+    class Meta:
+        ordering = ['user']
+
+
+class Invited_user(models.Model):
+    user = models.OneToOneField(User, related_name='user', db_index=True)
+    person = models.OneToOneField(User, related_name='person', db_index=True)
+    time = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return '%s invited %s @%s' % (self.user.username, self.person.username, self.time.strftime('%Y-%m-%d %H:%M:%S'))
+
+    class Meta:
+        ordering = ['-time', 'user']
