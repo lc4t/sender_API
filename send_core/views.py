@@ -2,7 +2,9 @@ import json
 from send_core.models import Function
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate
+from django.contrib.auth import login as LOGIN
+from django.contrib.auth import logout as LOGOUT
 
 
 # Create your views here.
@@ -24,6 +26,29 @@ def get_functions(request):
         response.append(one)
     return HttpResponse(json.dumps(response))
 
+def whoami(request):
+    response = {
+        'status': -1,
+        'message': 'error',
+        'data': {},
+    }
+    if request.user.is_authenticated():
+        response['status'] = 301
+        response['message'] = 'success'
+        response['data'] = {
+            'username': request.user.username,
+            'id': int(request.user.id),
+            'email': request.user.email,
+        }
+    else:
+        response['status'] = 401
+        response['message'] = 'success'
+        response['data'] = {
+            'username': None,
+            'id': 0,
+            'email': None,
+        }
+    return HttpResponse(json.dumps(response))
 
 def login(request):
     response = {
@@ -34,8 +59,8 @@ def login(request):
     if request.user.is_authenticated():
         response['status'] = 301
         response['message'] = 'already login'
-    elif request.POST:
-        raw_data = json.loads(request.raw_post_data)
+    elif request.method == 'POST':
+        raw_data = json.loads(request.body.decode())
         raw_user = raw_data.get('user')
         raw_password = raw_data.get('password')
         # captcha
@@ -46,13 +71,27 @@ def login(request):
             response['status'] = 210
             response['message'] = 'authenticate failed'
         else:
-            login(request, user)
+            LOGIN(request, user)
             response['status'] = 200
             response['message'] = 'authenticate success'
     return HttpResponse(json.dumps(response))
 
+
 def logout(request):
-    pass
+    response = {
+        'status': -1,
+        'message': 'error',
+        'data': []
+    }
+    LOGOUT(request)
+    response['status'] = 201
+    response['message'] = 'success'
+    response['data'] = {
+        'username': None,
+        'id': 0,
+        'email': None,
+    }
+    return HttpResponse(json.dumps(response))
 
 def register(request):
     pass

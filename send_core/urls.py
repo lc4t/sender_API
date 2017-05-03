@@ -19,6 +19,7 @@ from send_core import views
 urlpatterns = [
     url(r'^$', views.index),
     url(r'^get/functions/$', views.get_functions),
+    url(r'^user/whoami/$', views.whoami),
     url(r'^user/login/$', views.login),
     url(r'^user/logout/$', views.logout),
     url(r'^user/register/$', views.register),
