@@ -20,8 +20,9 @@ class Function(models.Model):
         ordering = ['name', 'author']
 
 
-class Invite_link(models.Model):
+class Invite(models.Model):
     user = models.ForeignKey(User, db_index=True)
+    code = models.CharField(max_length=128, db_index=True, default=None)
     link = models.URLField(blank=False)
     remain = models.IntegerField(default=5)
 
