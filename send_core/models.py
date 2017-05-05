@@ -4,6 +4,17 @@ from django.utils.timezone import now
 
 
 # Create your models here.
+class Status(models.Model):
+    target = models.CharField(max_length=200, blank=False, db_index=True)
+    status = models.CharField(max_length=200, blank=False, default='closed')
+
+    def __str__(self):
+        return '%s: %s' % (self.target, self.status)
+
+    class Meta:
+        ordering = ['target']
+
+
 class Function(models.Model):
     name = models.CharField(max_length=200, db_index=True, blank=False)
     author = models.CharField(max_length=200, db_index=True, blank=False)

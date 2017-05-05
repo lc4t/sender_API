@@ -1,5 +1,5 @@
 from django.contrib import admin
-from send_core.models import Function, Invite, Invited_user
+from send_core.models import Status, Function, Invite, Invited_user
 
 # Register your models here.
-admin.site.register([Function, Invite, Invited_user])
+admin.site.register([Status, Function, Invite, Invited_user])
