@@ -45,12 +45,12 @@ class Invite(models.Model):
 
 
 class Invited_user(models.Model):
-    user = models.OneToOneField(User, related_name='user', db_index=True)
     person = models.OneToOneField(User, related_name='person', db_index=True)
+    who_invite = models.ForeignKey(User, related_name='who_invite', db_index=True)
     time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return '%s invited %s @%s' % (self.user.username, self.person.username, self.time.strftime('%Y-%m-%d %H:%M:%S'))
+        return '%s invited %s @%s' % (self.who_invite.username, self.person.username, self.time.strftime('%Y-%m-%d %H:%M:%S'))
 
     class Meta:
-        ordering = ['-time', 'user']
+        ordering = ['-time', 'person']

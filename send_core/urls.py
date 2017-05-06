@@ -25,4 +25,6 @@ urlpatterns = [
     url(r'^user/register/$', views.register),
     url(r'^get/status/(?P<target>\w+)/$', views.status),
     url(r'^user/username/valid/$', views.username_valid),
+    url(r'^user/email/valid/$', views.email_valid),
+    url(r'^user/code/valid/$', views.code_valid),
 ]
