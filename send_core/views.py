@@ -291,7 +291,6 @@ def register(request):
         raw_code = ''
 
         register_status = check_status('register')
-        print(register_status)
         if 'close' in register_status['data'] or register_status['status'] == 101:
             response['status'] = 501
             response['message'] = '已经关闭注册'
