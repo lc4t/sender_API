@@ -1,7 +1,8 @@
 import json
 import re
-from send_core.models import Status, Function, Invite, Invited_user
+from send_core.models import Status, Function, Invite, Invited_user, Task
 from django.http import HttpResponse
+from django.utils.timezone import now
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as LOGIN
@@ -195,6 +196,7 @@ def get_functions(request):
     response = []
     for i in results:
         one = {}
+        one['id'] = i.id
         one['name'] = i.name
         one['title'] = i.title
         one['author'] = i.author
@@ -336,3 +338,175 @@ def register_check(username, password, email):
     if email_check['status'] != 203:
         return email_check
     return response
+
+
+@login_required
+def task(request):
+    response = {
+        'status': -1,
+        'message': 'error',
+        'data': []
+    }
+    tasks = Task.objects.filter(person=request.user)
+    for i in tasks:
+        obj = {
+            'id': i.id,
+            'name': {
+                'function': i.function.name,
+                'comment': i.comment,
+            },
+            'status': i.status,
+            'success': i.success,
+            'failed': i.failed,
+            'last': i.last_exec.strftime('%Y-%m-%d %H:%M:%S'),
+            'next': i.next_exec.strftime('%Y-%m-%d %H:%M:%S'),
+        }
+        response['data'].append(obj)
+    response['status'] = 206
+    response['message'] = 'success'
+    return HttpResponse(json.dumps(response))
+
+
+@login_required
+def get_function_form(request, target):
+    response = {
+        'status': -1,
+        'message': 'error',
+        'data': {}
+    }
+
+    comment = {
+        'type': 'text',
+        'name': '备注',
+        'value': '',
+        'descript': '备注, 可选'
+    }
+
+    funcs = Function.objects.filter(id=target)
+    if len(funcs) == 1:
+        function = funcs[0]
+        response['status'] = 212
+        response['message'] = 'success'
+        response['data'] = json.loads(function.params)
+        response['data']['input'].append(comment)
+
+        if function.ajax:
+            ajax = json.loads(function.params)
+            ajax['url'] = '/api/function/%s/ajax' % function.id
+            response['data']['ajax'].update(ajax)
+    return HttpResponse(json.dumps(response))
+
+
+@login_required
+def task_create(request):
+    response = {
+        'status': -1,
+        'message': 'error',
+    }
+    if request.user.is_authenticated():
+        raw_data = json.loads(request.body.decode())
+        functionID = raw_data.get('functionID')
+        functions = Function.objects.filter(id=functionID)
+        if len(functions) == 1:
+            function = functions[0]
+            new_task = Task.objects.create(params=json.dumps(raw_data['input']),
+                                           comment=raw_data['input'][-1]['value'],
+                                           person=request.user,
+                                           status='新创建',
+                                           function=function,
+                                           last_exec=now(),
+                                           next_exec=now(),
+                                           )
+            response['status'] = 207
+            response['message'] = 'create success, task id is %d' % new_task.id
+
+    return HttpResponse(json.dumps(response))
+
+
+@login_required
+def task_change(request):
+    response = {
+        'status': -1,
+        'message': 'error',
+    }
+    if request.user.is_authenticated():
+        raw_data = json.loads(request.body.decode())
+        if raw_data['taskID'] <= 0:     # check it is cause by change.
+            response['status'] = 452
+            response['message'] = 'taskID error'
+        else:
+            tasks = Task.objects.filter(id=raw_data['taskID'])
+            if len(tasks) == 1:
+                task = tasks[0]
+                if task.person == request.user:     # check belongs
+                    task.params = json.dumps(raw_data['input'], ensure_ascii=False)
+                    task.comment = raw_data['input'][-1]['value']
+                    task.save()
+                    response['status'] = 211
+                    response['message'] = 'change success, task id is %d' % raw_data['taskID']
+                else:
+                    response['status'] = 451
+                    response['message'] = 'This task is not belongs to you'
+    return HttpResponse(json.dumps(response))
+
+
+@login_required
+def task_delete(request, target):
+    response = {
+        'status': -1,
+        'message': 'error',
+    }
+    if request.user.is_authenticated():
+        tasks = Task.objects.filter(id=target)
+        if len(tasks) == 1:
+            task = tasks[0]
+            check = task.person.username
+            check = request.user.username
+            if check == request.user.username:  # this task is belongs to the user
+                task.delete()
+                response['status'] = 208
+                response['message'] = 'delete success'
+            else:
+                response['status'] = 451
+                response['message'] = 'This task is not belongs to you'
+    else:
+        response['status'] = 331
+        response['message'] = 'need login'
+    return HttpResponse(json.dumps(response))
+
+
+@login_required
+def task_log(request, target):
+    pass
+
+
+@login_required
+def task_detail(request, target):
+    response = {
+        'status': -1,
+        'message': 'error',
+    }
+    tasks = Task.objects.filter(id=target)
+    if len(tasks) == 1:
+        task = tasks[0]
+        if task.person == request.user:
+            response = {
+                'status': 210,
+                'message': 'success',
+                'data': {
+                    'taskID': task.id,
+                    'functionID': task.function.id,
+                    'name': task.function.name,
+                }
+            }
+            response['data'].update({'input': json.loads(task.params)})
+            func = Function.objects.filter(id=task.function.id)
+            function = func[0]
+            if function.ajax:
+                ajax = json.loads(function.params)
+                ajax['url'] = '/api/function/%s/ajax' % function.id
+                response['data'].update(ajax)
+    else:
+        response['status'] = 451
+        response['message'] = 'This task is not belongs to you'
+    return HttpResponse(json.dumps(response))
