@@ -18,20 +18,5 @@ from express_tracking import views
 
 urlpatterns = [
     url(r'^$', views.index),
-    url(r'^ajax/$', views.get_company),
-    # url(r'^user/whoami/$', views.whoami),
-    # url(r'^user/login/$', views.login),
-    # url(r'^user/logout/$', views.logout),
-    # url(r'^user/register/$', views.register),
-    # url(r'^get/status/(?P<target>\w+)/$', views.status),
-    # url(r'^get/function/form/(?P<target>\d+)/$', views.get_function_form),
-    # url(r'^user/username/valid/$', views.username_valid),
-    # url(r'^user/email/valid/$', views.email_valid),
-    # url(r'^user/code/valid/$', views.code_valid),
-    # url(r'^user/task/$', views.task),
-    # url(r'^task/create/$', views.task_create),
-    # url(r'^task/detail/(?P<target>\d+)/$', views.task_detail),
-    # url(r'^task/change/$', views.task_change),
-    # url(r'^task/delete/(?P<target>\d+)/$', views.task_delete),
-    # url(r'^task/log/(?P<target>\d+)/$', views.task_log),
+    url(r'^ajax/$', views.ajax),
 ]

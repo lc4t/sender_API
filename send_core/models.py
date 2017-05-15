@@ -23,7 +23,7 @@ class Function(models.Model):
     count = models.IntegerField(default=0)
     status = models.BooleanField(default=False)
     update_time = models.DateTimeField(default=now())
-    params = models.CharField(max_length=1024, default='[{"type": "text", "name": "username", "value": "", "descript": "Your Username"}, {"type": "password", "name": "password", "value": "", "descript": "Your Password"}]')
+    params = models.CharField(max_length=1024, default='{"input": [{"type": "text", "name": "number", "value": "", "descript": "快递单号"}, {"type": "text", "name": "company", "value": "", "descript": "公司，点击下面按钮获取"}], "ajax": {"text": "获取公司"}}')
     ajax = models.BooleanField(default=False)
 
     def __str__(self):
@@ -68,6 +68,7 @@ class Task(models.Model):
     last_exec = models.DateTimeField(blank=True)
     next_exec = models.DateTimeField(blank=True)
     params = models.CharField(max_length=2048, default='{}')    # json.dumps
+    check = models.IntegerField(default=0)
 
     def __str__(self):
         return '%s start %s, %s, next is %s' % (self.person.username, self.function.name, self.status, self.next_exec.strftime('%Y-%m-%d %H:%M:%S'))

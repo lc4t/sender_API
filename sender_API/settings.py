@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'send_core',
     'express_tracking',
+    'asyncmailer',
 ]
 
 MIDDLEWARE = [

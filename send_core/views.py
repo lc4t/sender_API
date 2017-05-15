@@ -387,12 +387,14 @@ def get_function_form(request, target):
         function = funcs[0]
         response['status'] = 212
         response['message'] = 'success'
+        print(function.params)
+        print(json.loads(function.params))
         response['data'] = json.loads(function.params)
         response['data']['input'].append(comment)
 
         if function.ajax:
             ajax = json.loads(function.params)
-            ajax['url'] = '/api/function/%s/ajax' % function.id
+            ajax['url'] = '/api/function/%s/ajax/' % function.id
             response['data']['ajax'].update(ajax)
     return HttpResponse(json.dumps(response))
 
@@ -405,11 +407,12 @@ def task_create(request):
     }
     if request.user.is_authenticated():
         raw_data = json.loads(request.body.decode())
+        print(raw_data)
         functionID = raw_data.get('functionID')
         functions = Function.objects.filter(id=functionID)
         if len(functions) == 1:
             function = functions[0]
-            new_task = Task.objects.create(params=json.dumps(raw_data['input']),
+            new_task = Task.objects.create(params=json.dumps({'input': raw_data['input']}, ensure_ascii=False),
                                            comment=raw_data['input'][-1]['value'],
                                            person=request.user,
                                            status='新创建',
@@ -439,7 +442,7 @@ def task_change(request):
             if len(tasks) == 1:
                 task = tasks[0]
                 if task.person == request.user:     # check belongs
-                    task.params = json.dumps(raw_data['input'], ensure_ascii=False)
+                    task.params = json.dumps({'input': raw_data['input']}, ensure_ascii=False)
                     task.comment = raw_data['input'][-1]['value']
                     task.save()
                     response['status'] = 211
@@ -499,13 +502,14 @@ def task_detail(request, target):
                     'name': task.function.name,
                 }
             }
-            response['data'].update({'input': json.loads(task.params)})
+            response['data'].update(json.loads(task.params))
             func = Function.objects.filter(id=task.function.id)
             function = func[0]
             if function.ajax:
                 ajax = json.loads(function.params)
-                ajax['url'] = '/api/function/%s/ajax' % function.id
-                response['data'].update(ajax)
+                ajax = ajax.get('ajax')
+                ajax['url'] = '/api/function/%s/ajax/' % function.id
+                response['data']['ajax'] = ajax
     else:
         response['status'] = 451
         response['message'] = 'This task is not belongs to you'
