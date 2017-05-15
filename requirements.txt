@@ -3,3 +3,5 @@ mysqlclient==1.3.10
 django-cors-header==2.0.2
 celery==4.0.2
 django-asyncmailer==1.4.1
+uwsgi==2.0.15
+requests==2.14.2
