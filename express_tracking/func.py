@@ -30,6 +30,13 @@ def get_company(number):
     return company
 
 
+def plus():
+    functions = Function.objects.filter(name='express_tracking')
+    function = functions[0]
+    function.count += 1
+    function.save()
+
+
 def get_my_task():
     # global ID
     functions = Function.objects.filter(name='express_tracking')

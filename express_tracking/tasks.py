@@ -42,5 +42,6 @@ def check_one(number, company, personid, taskid):
             title = 'new express tracking of %s' % Task.objects.filter(id=taskid)[0].comment
             plain = '%s %s update @%s: %s' % (company, number, i.get('time'), i.get('text'))
             async_select_and_send.delay(User.objects.filter(id=personid)[0].email, title, plain)
+            func.plus()
     except Exception as e:
         return check_one.retry(number, company, personid, taskid)

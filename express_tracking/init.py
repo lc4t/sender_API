@@ -1,3 +1,4 @@
+import json
 from send_core.models import Function
 
 
@@ -20,5 +21,5 @@ params = {
         "text": "查询公司",
     }
 }
-
-Function.objects.create(name='express_tracking', author='lc4t', title='快递跟踪提醒', descript='将快递每一步路由更新发送到邮箱', status=True, params=params)
+params = json.dumps(params, ensure_ascii=False)
+Function.objects.create(name='express_tracking', author='lc4t', title='快递跟踪提醒', descript='将快递每一步路由更新发送到邮箱', status=True, params=params, ajax=True)

@@ -10,6 +10,8 @@
 
 and get the `function.id`, change `settings.py`, add your `function/ID` there
 
+`python manage.py collectstatic` to get static files
+
 after sync the db,
 
 `rabbitmq-server` to start RabitMQ
