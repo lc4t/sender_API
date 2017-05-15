@@ -387,8 +387,6 @@ def get_function_form(request, target):
         function = funcs[0]
         response['status'] = 212
         response['message'] = 'success'
-        print(function.params)
-        print(json.loads(function.params))
         response['data'] = json.loads(function.params)
         response['data']['input'].append(comment)
 
@@ -407,7 +405,6 @@ def task_create(request):
     }
     if request.user.is_authenticated():
         raw_data = json.loads(request.body.decode())
-        print(raw_data)
         functionID = raw_data.get('functionID')
         functions = Function.objects.filter(id=functionID)
         if len(functions) == 1:
