@@ -4,6 +4,7 @@ from send_core.models import Status, Function, Invite, Invited_user, Task
 from django.http import HttpResponse
 from django.utils.timezone import now
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as LOGIN
 from django.contrib.auth import logout as LOGOUT
@@ -208,6 +209,7 @@ def get_functions(request):
     return HttpResponse(json.dumps(response))
 
 
+@ensure_csrf_cookie
 def whoami(request):
     response = {
         'status': -1,
