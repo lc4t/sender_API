@@ -17,3 +17,8 @@ after sync the db,
 `rabbitmq-server` to start RabitMQ
 
 `celery -A send_core worker --loglevel=info --beat` is how to start celery
+
+
+change register status:
+
+db: `send_core/status: register->invite`
