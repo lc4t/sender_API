@@ -13,8 +13,8 @@ params = {
         {
             "type": "text",
             "name": "company",
-            "value": "auto",
-            "descript": "快递公司，点击按钮查询，不写请保持为auto"
+            "value": "",
+            "descript": "快递公司，点击按钮查询"
         }
     ],
     "ajax": {

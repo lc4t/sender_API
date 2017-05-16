@@ -2,7 +2,7 @@ import json
 from random import randint
 import datetime
 import requests as r
-from send_core.models import Task, Function
+from send_core.models import Task, Function, Log
 from django.utils.timezone import now
 from django.contrib.auth.models import User
 from express_tracking.models import Tracking_num, Tracking
@@ -51,8 +51,7 @@ def get_my_task():
         return []
 
 
-def failed(taskid):
-    task = Task.objects.filter(id=taskid)[0]
+def failed(task):
     task.last_exec = now()
     task.next_exec = now() + datetime.timedelta(minutes=5)
     task.check += 1
@@ -115,9 +114,11 @@ def check_one(number, company, personid, taskid):
     else:
         tracking_num = exists[0]
     message = get_all_message(number, company)
+    Log.objects.create(task=task, text=json.dumps(message, ensure_ascii=False))
     # check message
+
     if message['status'] == '400':
-        failed(taskid)
+        failed(task)
     elif message['status'] in ['200', '201']:
         new_message = success(message, tracking_num, task)
         return new_message

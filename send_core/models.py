@@ -75,3 +75,15 @@ class Task(models.Model):
 
     class Meta:
         ordering = ['id', 'person', 'function']
+
+
+class Log(models.Model):
+    task = models.ForeignKey(Task, related_name='log_task', db_index=True)
+    time = models.DateTimeField(auto_now_add=True, db_index=True)
+    text = models.TextField()
+
+    def __str__(self):
+        return '%s@%s: %s' % (self.task.id, self.time.strftime('%Y-%m-%d %H:%M:%S'), self.text)
+
+    class Meta:
+        ordering = ['task', 'time']
