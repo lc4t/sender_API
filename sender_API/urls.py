@@ -20,5 +20,5 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/core/', include('send_core.urls')),
     url(r'^asyncmailer/', include('asyncmailer.urls')),
-    url(r'^api/function/3/', include('express_tracking.urls')),
+    url(r'^api/function/1/', include('express_tracking.urls')),
 ]

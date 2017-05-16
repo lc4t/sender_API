@@ -466,6 +466,11 @@ def task_delete(request, target):
                 task.delete()
                 response['status'] = 208
                 response['message'] = 'delete success'
+                try:
+                    func_module = __import__(task.function.name)
+                    func_module.func.delete(task)
+                except Exception as e:
+                    print(e)
             else:
                 response['status'] = 451
                 response['message'] = 'This task is not belongs to you'

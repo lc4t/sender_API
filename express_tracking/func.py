@@ -39,7 +39,7 @@ def plus():
 
 def get_my_task():
     # global ID
-    functions = Function.objects.filter(name='express_tracking')
+    functions = Function.objects.filter(name='express_tracking', status=True)
     if len(functions) == 1:
         function = functions[0]
         tasks = Task.objects.filter(function=function)
@@ -47,6 +47,8 @@ def get_my_task():
             return tasks
         else:
             return []
+    else:
+        return []
 
 
 def failed(taskid):
@@ -54,15 +56,15 @@ def failed(taskid):
     task.last_exec = now()
     task.next_exec = now() + datetime.timedelta(minutes=5)
     task.check += 1
+    task.failed += 1
     if 1 <= task.check <= 4:
         task.status = 'failed %d time' % task.check
     else:
         task.status = 'stop'
     task.save()
-    print('failed check point')
 
 
-def success(message, tracking_num, taskid):
+def success(message, tracking_num, task):
     data = []
     new_message = []
     for i in message.get('data', []):
@@ -81,9 +83,9 @@ def success(message, tracking_num, taskid):
         if len(checker) == 0:
             Tracking.objects.create(tracking_num=tracking_num, update_time=ttime, plain=d.get('text'))
             new_message.append(d)
-    task = Task.objects.filter(id=taskid)[0]
     task.status = 'running'
     task.success += 1
+    task.check = 0
     task.last_exec = now()
     task.next_exec = now() + datetime.timedelta(minutes=5)
     task.save()
@@ -105,10 +107,11 @@ def get_all_message(number, company):
 
 
 def check_one(number, company, personid, taskid):
+    task = Task.objects.filter(id=taskid)[0]
     user = User.objects.filter(id=personid)[0]
     exists = Tracking_num.objects.filter(tracking_num=number, company=company, belongs=user)
     if len(exists) == 0:
-        tracking_num = Tracking_num.create(user, number, company)
+        tracking_num = Tracking_num.create(user, number, company, task)
     else:
         tracking_num = exists[0]
     message = get_all_message(number, company)
@@ -116,10 +119,22 @@ def check_one(number, company, personid, taskid):
     if message['status'] == '400':
         failed(taskid)
     elif message['status'] in ['200', '201']:
-        new_message = success(message, tracking_num, taskid)
+        new_message = success(message, tracking_num, task)
         return new_message
     elif message is None:
         print('server error')
     else:
         print(message)
     return []
+
+
+def delete(task):
+    tracking_nums = Tracking_num.objects.filter(task=task)
+    for tracking_num in tracking_nums:
+        delete_tracking(tracking_num)
+        tracking_num.delete()
+
+def delete_tracking(tracking_num):
+    trackings = Trackings.objects.filter(tracking_num=tracking_num)
+    for tracking in trackings:
+        tracking.delete()
