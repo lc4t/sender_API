@@ -443,6 +443,8 @@ def task_change(request):
                 if task.person == request.user:     # check belongs
                     task.params = json.dumps({'input': raw_data['input']}, ensure_ascii=False)
                     task.comment = raw_data['input'][-1]['value']
+                    task.check = 0
+                    task.status = '重新创建'
                     task.save()
                     response['status'] = 211
                     response['message'] = 'change success, task id is %d' % raw_data['taskID']
