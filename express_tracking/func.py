@@ -100,8 +100,11 @@ def check():
 
 def get_all_message(number, company):
     url = 'https://www.kuaidi100.com/query?type=%s&postid=%s' % (company, number)
-    getter = r.get(url, headers=headers).text
-    message = json.loads(getter)
+    try:
+        getter = r.get(url, headers=headers).text
+        message = json.loads(getter)
+    except Exception as e:
+        message = {'error': 'get message from %s' % url}
     return message
 
 
@@ -114,7 +117,10 @@ def check_one(number, company, personid, taskid):
     else:
         tracking_num = exists[0]
     message = get_all_message(number, company)
-    Log.objects.create(task=task, text=json.dumps(message, ensure_ascii=False))
+    text = json.dumps(message, ensure_ascii=False)
+    if len(Log.objects.filter(task=task, text=text)) > 0:
+        text = 'same with last one'
+    Log.objects.create(task=task, text=text)
     # check message
 
     if message['status'] == '400':
