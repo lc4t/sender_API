@@ -10,9 +10,9 @@ from django.contrib.auth.models import User
 from asyncmailer.tasks import async_select_and_send
 
 
-@periodic_task(run_every=crontab(minute='*/1'), name='test')
-def test():
-    print('uestc_grade is running')
+# @periodic_task(run_every=crontab(minute='*/1'), name='test')
+# def test():
+#     print('uestc_grade is running')
 
 
 @periodic_task(run_every=crontab(minute='*/1'), name='check_new_grade')
