@@ -26,7 +26,7 @@ class Grade(models.Model):
     number = models.CharField(max_length=30, default='', db_index=True)
     courseName = models.CharField(max_length=100, default='')
     courseType = models.CharField(max_length=100, default='')
-    credit = models.CharField(max_length=2, default='')
+    credit = models.CharField(max_length=8, default='')
     totalGrade = models.CharField(max_length=8, default='', db_index=True)
     makeupGrade = models.CharField(max_length=8, default='', db_index=True)
     finalGrade = models.CharField(max_length=8, default='', db_index=True)
