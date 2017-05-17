@@ -4,3 +4,4 @@ celery==4.0.2
 django-asyncmailer==1.4.1
 uwsgi==2.0.15
 requests==2.14.2
+BeautifulSoup4==4.6.0

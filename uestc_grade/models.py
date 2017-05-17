@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from send_core.models import Task
 
 
-class Account(models.Model):   # express nums
+class Account(models.Model):
     username = models.CharField(max_length=50, db_index=True)  # lc4t think the express num is not longer than 50
     password = models.CharField(max_length=100)  # so..100
     cookie = models.CharField(max_length=200, default='')
