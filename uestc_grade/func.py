@@ -107,7 +107,7 @@ def check_one(taskid):
                     grade.save()
                     new_message.append(g)
     if len(new_message) > 0:
-        LOG.objects.create(task=task, text=json.dumps(new_message, ensure_ascii=False, indent=4))
+        Log.objects.create(task=task, text=json.dumps(new_message, ensure_ascii=False, indent=4))
     return new_message
 
 
@@ -130,3 +130,15 @@ def success(task):
     task.last_exec = now()
     task.next_exec = now() + datetime.timedelta(minutes=30)
     task.save()
+
+
+def delete(task):
+    accounts = Account.objects.filter(task=task)
+    for account in accounts:
+        delete_grade(account)
+        account.delete()
+
+def delete_grade(account):
+    grades = Grade.objects.filter(account=account)
+    for grades in grades:
+        grade.delete()
