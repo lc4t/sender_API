@@ -9,9 +9,9 @@ from django.contrib.auth.models import User
 from asyncmailer.tasks import async_select_and_send
 
 
-@periodic_task(run_every=crontab(minute='*/1'), name='test')
-def test():
-    print('express_tracking is running')
+# @periodic_task(run_every=crontab(minute='*/1'), name='test')
+# def test():
+#     print('express_tracking is running')
 
 
 @periodic_task(run_every=crontab(minute='*/1'), name='check_new_express')
@@ -19,11 +19,14 @@ def check_new_express():
     tasks = func.get_my_task()
     for t in tasks:
         if t.next_exec <= now() and t.check < 5:
-            person = t.person
-            params = json.loads(t.params)
-            number = params.get('input')[0].get('value')
-            company = params.get('input')[1].get('value')
-            check_one.delay(number, company, person.id, t.id)
+            try:
+                person = t.person
+                params = json.loads(t.params)
+                number = params.get('input')[0].get('value')
+                company = params.get('input')[1].get('value')
+                check_one.delay(number, company, person.id, t.id)
+            except Exception as e:
+                pass
 
 
 @shared_task(default_retry_delay=5, max_retries=3)

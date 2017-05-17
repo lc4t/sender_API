@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'send_core',
     'express_tracking',
     'asyncmailer',
+    'uestc_grade',
 ]
 
 MIDDLEWARE = [
