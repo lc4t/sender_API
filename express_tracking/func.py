@@ -53,7 +53,7 @@ def get_my_task():
 
 def failed(task):
     task.last_exec = now()
-    task.next_exec = now() + datetime.timedelta(minutes=5)
+    task.next_exec = now() + datetime.timedelta(minutes=30)
     task.check += 1
     task.failed += 1
     if 1 <= task.check <= 4:

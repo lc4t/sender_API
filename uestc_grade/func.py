@@ -114,7 +114,7 @@ def check_one(taskid):
 def failed(task):
     task.last_exec = now()
     task.check += 1
-    task.next_exec = now() + datetime.timedelta(minutes= 30 * check)
+    task.next_exec = now() + datetime.timedelta(minutes= 30 * task.check)
     task.failed += 1
     if 1 <= task.check <= 4:
         task.status = 'failed %d time' % task.check

@@ -20,7 +20,7 @@ params = {
             "type": "text",
             "name": "JSESSIONID",
             "value": "",
-            "descript": "exam的JSESSIONID, 如果为将通过password获取"
+            "descript": "eams的JSESSIONID, 如果为空将通过password自动获取"
         }
     ],
 }

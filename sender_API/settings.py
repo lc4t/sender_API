@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'express_tracking',
     'asyncmailer',
     'uestc_grade',
+    'web_change',
 ]
 
 MIDDLEWARE = [
