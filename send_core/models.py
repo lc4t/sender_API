@@ -71,7 +71,7 @@ class Task(models.Model):
     check = models.IntegerField(default=0)
 
     def __str__(self):
-        return '%s start %s, %s, next is %s' % (self.person.username, self.function.name, self.status, self.next_exec.strftime('%Y-%m-%d %H:%M:%S'))
+        return '[%d]%s start %s, %s, next is %s' % (self.id, self.person.username, self.function.name, self.status, self.next_exec.strftime('%Y-%m-%d %H:%M:%S'))
 
     class Meta:
         ordering = ['id', 'person', 'function']
