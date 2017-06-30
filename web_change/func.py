@@ -74,7 +74,7 @@ def check_one(taskid):
     if len(match) == 0:
         content = content + ''
     else:
-        if not check_empty(re.match(match, html)):
+        if not check_empty(re.findall(match, html)):
             _match = True
             content += '%s is matched' % match
         else:
