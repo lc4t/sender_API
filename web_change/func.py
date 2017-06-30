@@ -102,6 +102,8 @@ def check_one(taskid):
         return []
 
 def check_empty(l):
+    if l is None:
+        return True
     if len(l) == 0:
         return True
     for i in l:
