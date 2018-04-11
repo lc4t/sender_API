@@ -411,8 +411,8 @@ class uestc():
 if __name__ == '__main__':
     u =  uestc()
     print(u.login_password('', ''))
-    print(u.login_cookies({"JSESSIONID": "F58B4DC221935D41DC447DAAC5AE192D"}))
+    print(u.login_cookies({"JSESSIONID": "2B0F740A836614C7FC1DD84A57A6F840"}))
     raw_data = u.get_courses(pretty=True)
     print(type(raw_data))
     print(raw_data)
-    g = GradeAnalyzer(raw_data)
+    # g = GradeAnalyzer(raw_data)

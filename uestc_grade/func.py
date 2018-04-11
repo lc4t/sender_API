@@ -106,6 +106,9 @@ def check_one(taskid):
                     grade.gradePoint = gradePoint
                     grade.save()
                     new_message.append(g)
+            else:
+                print('error grade')
+
     if len(new_message) > 0:
         Log.objects.create(task=task, text=json.dumps(new_message, ensure_ascii=False, indent=4))
     return new_message
